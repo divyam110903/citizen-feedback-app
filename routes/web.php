@@ -1,5 +1,6 @@
 <?php
-
+use App\Models\Feedback;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\AdminController;
@@ -10,14 +11,16 @@ Route::get('/', function () {
 });
 
 
+
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    $feedbacks = Feedback::where('user_id', Auth::id())->latest()->get();
+    return view('dashboard', compact('feedbacks'));
+})->middleware(['auth'])->name('dashboard');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/feedback', [AdminController::class, 'index'])->name('admin.feedback.index');
     Route::get('/feedback/{feedback}', [AdminController::class, 'show'])->name('admin.feedback.show');
-    Route::post('/feedback/{feedback}', [AdminController::class, 'update'])->name('admin.feedback.update');
+    Route::post('/admin/feedback/{id}/update', [AdminController::class, 'update'])->name('admin.feedback.update');
 });
 
 

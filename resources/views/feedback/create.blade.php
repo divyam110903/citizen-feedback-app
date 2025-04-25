@@ -14,7 +14,7 @@
                 <!-- Form on the Left -->
                 <div class="w-full lg:w-1/2 lg:flex-shrink-0 lg:order-1">
                     <div class="p-6 bg-white shadow-lg dark:bg-gray-800 rounded-2xl">
-                        <form method="POST" action="{{ route('feedback.store') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('feedback.store') }}" enctype="multipart/form-data">
                             @csrf
 
                             <!-- Category -->

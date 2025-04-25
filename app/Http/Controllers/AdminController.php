@@ -18,15 +18,18 @@ class AdminController extends Controller
         return view('admin.feedback.show', compact('feedback'));
     }
 
-    public function update(Request $request, Feedback $feedback)
-    {
-        $request->validate([
-            'status' => 'required|string|in:pending,in_progress,resolved',
-            'priority' => 'required|string|in:low,normal,high',
-        ]);
+    public function update(Request $request, $id)
+{
+    $request->validate([
+        'status' => 'required|string',
+        'priority' => 'required|string',
+    ]);
 
-        $feedback->update($request->only(['status', 'priority']));
+    $feedback = Feedback::findOrFail($id);
+    $feedback->status = $request->status;
+    $feedback->priority = $request->priority;
+    $feedback->save();
 
-        return redirect()->route('admin.feedback.index')->with('status', 'Feedback updated successfully!');
-    }
+    return redirect()->route('admin.feedback.index')->with('status', 'Feedback updated successfully!');
+}
 }

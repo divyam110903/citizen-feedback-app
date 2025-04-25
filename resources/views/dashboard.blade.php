@@ -8,7 +8,7 @@
     <div class="py-12 bg-[#f9fdd7] min-h-screen px-4 lg:px-8">
         <div class="max-w-xl mx-auto">
             <div class="p-6 bg-white shadow-lg dark:bg-gray-800 rounded-2xl">
-                <!-- Carousel Container -->
+                <!-- Carousel Component -->
                 <div 
                     x-data="{
                         currentSlide: 0,
@@ -25,14 +25,15 @@
                             },
                             { 
                                 image: '/images/c.png', 
-                                link: '{{ route('dashboard') }}',
-                                title: 'Dashboard'
+                                link: 'https://www.vimpo.com.tr/en/blog/the-importance-of-regular-road-maintenance',
+                                title: 'Blog'
                             },
                             { 
                                 image: '/images/d.png', 
-                                link: '{{ route('profile.edit') }}',
-                                title: 'Your Profile'
+                                link: '{{ route('dashboard') }}',
+                                title: 'Dashboard'
                             }
+                                
                         ],
                         nextSlide() {
                             this.currentSlide = (this.currentSlide + 1) % this.slides.length;
@@ -46,8 +47,11 @@
                     }"
                     class="relative w-full p-4 bg-gray-900 shadow-2xl rounded-xl"
                 >
-                    <!-- Image Slide -->
-                    <div class="relative w-full h-64 overflow-hidden rounded-lg">
+                    <!-- Left Arrow -->
+                    
+
+                    <!-- Slide Image & Title -->
+                    <div class="relative flex items-center justify-center w-full h-64 overflow-hidden rounded-lg">
                         <a 
                             :href="slides[currentSlide].link" 
                             class="flex flex-col items-center justify-center w-full h-full gap-2 group"
@@ -55,7 +59,7 @@
                             <img 
                                 :src="slides[currentSlide].image" 
                                 :alt="slides[currentSlide].title"
-                                class="object-cover w-48 h-48 mx-auto transition-all duration-300 border-4 border-white shadow-lg rounded-xl group-hover:scale-105"
+                                class="object-cover w-48 transition-all duration-300 border-4 border-white shadow-lg h-80 w- rounded-xl group-hover:scale-105"
                                 x-transition:enter="transition ease-out duration-300"
                                 x-transition:enter-start="opacity-0"
                                 x-transition:enter-end="opacity-100"
@@ -66,32 +70,27 @@
                             <span class="text-lg font-medium text-white" x-text="slides[currentSlide].title"></span>
                         </a>
                     </div>
+                    <!-- Left Arrow -->
+<button 
+    @click="prevSlide()" 
+    class="z-10 p-4 transition -translate-y-1/2 rounded-full shadow-md top-1/2 left-2 bg-white/90 hover:bg-yellow-300 focus:outline-none"
+    aria-label="Previous slide"
+>
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+</button>
 
-                  
-
-                    <!-- Navigation Arrows -->
-<div class="absolute z-10 transform -translate-y-1/2 top-1/2 left-2">
-    <button 
-        @click="prevSlide()" 
-        class="p-2 transition rounded-full shadow-md bg-white/90 hover:bg-yellow-300 focus:outline-none"
-        aria-label="Previous slide"
-    >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-    </button>
-</div>
-<div class="absolute z-10 transform -translate-y-1/2 top-1/2 right-2">
-    <button 
-        @click="nextSlide()" 
-        class="p-2 transition rounded-full shadow-md bg-white/90 hover:bg-yellow-300 focus:outline-none"
-        aria-label="Next slide"
-    >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-    </button>
-</div>
+<!-- Right Arrow -->
+<button 
+    @click="nextSlide()" 
+    class="z-10 p-4 transition -translate-y-1/2 rounded-full shadow-md top-1/2 right-2 bg-white/90 hover:bg-yellow-300 focus:outline-none"
+    aria-label="Next slide"
+>
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    </svg>
+</button>
 
                     <!-- Slide Indicators -->
                     <div class="flex justify-center mt-4 space-x-2">
@@ -111,4 +110,24 @@
             </div>
         </div>
     </div>
+        <h2 class="mb-4 text-lg font-bold">My Feedback</h2>
+
+@forelse($feedbacks as $feedback)
+    <div class="p-4 mb-4 bg-white border rounded shadow">
+        <p><strong>Category:</strong> {{ $feedback->category }}</p>
+        <p><strong>Description:</strong> {{ $feedback->description }}</p>
+        <p><strong>Status:</strong>
+            <span class="inline-block px-2 py-1 rounded text-sm
+                {{ $feedback->status == 'resolved' ? 'bg-green-100 text-green-800' : 
+                   ($feedback->status == 'in_progress' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
+                {{ ucfirst(str_replace('_', ' ', $feedback->status)) }}
+            </span>
+        </p>
+        <p><strong>Priority:</strong> {{ ucfirst($feedback->priority) }}</p>
+    </div>
+@empty
+    <p>No feedback submitted yet.</p>
+@endforelse
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </x-app-layout>
